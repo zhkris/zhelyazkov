@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies and build assets
         run: |
           npm install
-          npm run production # or `npm run build`, depending on your setup
+          npm run build
 
       # Step 4: Set up Fly.io CLI
       - name: Set up Fly.io CLI
