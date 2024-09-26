@@ -12,6 +12,7 @@ jobs:
     concurrency: deploy-group # optional: ensure only one action runs at a time
     steps:
       # Check out the repository
+      - name: Check out thre repository
       - uses: actions/checkout@v4
 
       # Set up Node.js (used for building frontend assets)
