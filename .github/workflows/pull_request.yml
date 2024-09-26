@@ -26,14 +26,26 @@ jobs:
         run: |
           composer install --prefer-dist --no-ansi --no-interaction --no-scripts --no-progress --optimize-autoloader
 
-      # Step 4: Laravel setup
+      # Step 4: Set up Node.js (for Vite)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18" # Specify your Node.js version
+
+      # Step 5: Install Node.js dependencies and build assets with Vite
+      - name: Build assets
+        run: |
+          npm install
+          npm run build # or your specific build command for Vite
+
+      # Step 6: Laravel setup
       - name: Laravel setup
         run: |
           cp .env.example .env
           php artisan key:generate
           php artisan migrate --force # Run migrations if necessary
 
-      # Step 5: Run Laravel Tests
+      # Step 7: Run Laravel Tests
       - name: Run Laravel Tests
         run: |
           php artisan test
