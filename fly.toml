@@ -24,6 +24,9 @@ console_command = 'php /var/www/html/artisan tinker'
   DB_DATABASE = '/var/www/html/storage/database/database.sqlite'
   APP_URL = 'https://zhelyazkov.fly.dev'
   APP_DEBUG=false
+  MAIL_MAILER=smtp
+  MAIL_HOST=sandbox.smtp.mailtrap.io
+  MAIL_PORT=2525
 
 [mounts]
   source="storage_vol"
