@@ -12,8 +12,6 @@ console_command = 'php /var/www/html/artisan tinker'
     NODE_VERSION = '18'
     PHP_VERSION = '8.2'
 
-[scale]
-  idle_timeout = "1h"
 
 [env]
   APP_ENV = 'production'
@@ -38,6 +36,12 @@ console_command = 'php /var/www/html/artisan tinker'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
+
+[http_service.http_options]
+  idle_timeout = 3600
+
+[services.ports.http_options]
+  idle_timeout = 3600
 
 [[vm]]
   memory = '1gb'
