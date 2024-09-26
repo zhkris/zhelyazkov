@@ -27,6 +27,7 @@ jobs:
           npm run production # or `npm run build`, depending on your setup
 
       # Set up Fly.io CLI
+      - name: Set up Fly.io CLI
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       # Deploy to Fly.io
