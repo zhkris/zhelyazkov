@@ -36,4 +36,4 @@ jobs:
       # Step 5: Run Laravel Tests
       - name: Run Laravel Tests
         run: |
-          php artisan test --verbose
+          php artisan test
