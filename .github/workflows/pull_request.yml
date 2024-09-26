@@ -1,0 +1,51 @@
+name: Pull Request Tests
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  deploy:
+    name: Test Application
+    runs-on: ubuntu-latest
+    concurrency: deploy-group # optional: ensure only one action runs at a time
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up PHP
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2" # Specify your PHP version
+          extensions: mbstring, bcmath, pdo, xml
+          tools: composer
+
+      # Step 3: Install Composer dependencies
+      - name: Install Composer dependencies
+        run: |
+          composer install --prefer-dist --no-ansi --no-interaction --no-scripts --no-progress --optimize-autoloader
+
+      # Step 4: Set up Node.js (for Vite)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18" # Specify your Node.js version
+
+      # Step 5: Install Node.js dependencies and build assets with Vite
+      - name: Build assets
+        run: |
+          npm install
+          npm run build # or your specific build command for Vite
+
+      # Step 6: Laravel setup
+      - name: Laravel setup
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          php artisan migrate --force # Run migrations if necessary
+
+      # Step 7: Run Laravel Tests
+      - name: Run Laravel Tests
+        run: |
+          php artisan test

@@ -1,0 +1,57 @@
+name: Fly Deploy
+on:
+  push:
+    branches: ["master"]
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    concurrency: deploy-group # optional: ensure only one action runs at a time
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up PHP
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2" # Specify your PHP version
+          extensions: mbstring, bcmath, pdo, xml
+          tools: composer
+
+      # Step 3: Install Composer dependencies
+      - name: Install Composer dependencies
+        run: |
+          composer install --prefer-dist --no-ansi --no-interaction --no-scripts --no-progress --optimize-autoloader
+
+      # Step 4: Run Laravel setup commands
+      - name: Laravel setup
+        run: |
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan migrate --force # Run migrations if necessary
+
+      # Step 5: Set up Node.js (used for building frontend assets)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18" # Specify your Node.js version here
+
+      # Step 6: Install Node.js dependencies and build assets
+      - name: Install dependencies and build assets
+        run: |
+          npm install
+          npm run build # or `npm run build`, depending on your setup
+
+      # Step 7: Set up Fly.io CLI
+      - name: Set up Fly.io CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      # Step 8: Deploy to Fly.io
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          APP_KEY: ${{ secrets.APP_KEY }}
